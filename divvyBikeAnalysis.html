@@ -7482,7 +7482,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Chicago-Divvy-bike-Analysis">Chicago Divvy bike Analysis<a class="anchor-link" href="#Chicago-Divvy-bike-Analysis">¶</a></h1><p>In this project we will be diving into chicago divvy bike data from July 2021 to July 2022.
+<h1 id="Chicago-Divvy-bike-Analysis">Chicago Divvy bike Analysis<a class="anchor-link" href="#Chicago-Divvy-bike-Analysis">¶</a></h1><p><strong>Download the data from Kaggle <a href="https://www.kaggle.com/datasets/gunnarn/chicago-bicycle-rent-usage">https://www.kaggle.com/datasets/gunnarn/chicago-bicycle-rent-usage</a></strong></p>
+<p>In this project we will be diving into chicago divvy bike data from July 2021 to July 2022.
 The main purpose of this analysis is to predict whether a casual rider would be likely to convert to a member. To get to this point we will be following these steps:</p>
 <ul>
 <li><p>Data Collection: We will dive ino the dataset that includes usage patterns of Cyclistic's bikes in Chicago. The data includes both casual riders and annual members, along with other attributes like trip duration, start and end times, start and end locations, type of bike and return/pickup locations.</p>
@@ -7792,7 +7793,7 @@ memory usage: 8.3+ MB
 <h2 id="EDA">EDA<a class="anchor-link" href="#EDA">¶</a></h2><p>In this section we will:</p>
 <ul>
 <li>Set descriptive statistics: mean, median, mode, etc., for ride duration, distance, and temporal features.</li>
-<li>Compare usage patterns between casual riders and annual members using visualizations like histograms, box plots, and time series plots.</li>
+<li>Compare usage patterns between casual riders and annual members using visualizations like histograms and time series plots.</li>
 <li>Perform correlation analysis to see if any features strongly correlate with the rider type.</li>
 </ul>
 </div>
@@ -8255,24 +8256,17 @@ Mode Start Hour: [17]
 <h2 id="Machine-Learning-Model">Machine Learning Model<a class="anchor-link" href="#Machine-Learning-Model">¶</a></h2><p>Based on the EDA, we can infer the following characteristics about casual and member riders:</p>
 <p>To predict whether a casual rider would be likely to convert to a member, a binary classification model is suitable. Here are some potential models based on the information gathered:</p>
 <ul>
-<li><p>Random Forest: This model is robust to outliers and can handle non-linear relationships, which might be present given the varying patterns of usage throughout the week and day.</p>
-</li>
-<li><p>Gradient Boosting Machines (GBM): If there are complex patterns that simpler models cannot capture, GBMs can be a powerful alternative.</p>
-</li>
-<li><p>Support Vector Machines (SVM): If the boundary between the casual and member classes is not linear, SVM with a non-linear kernel might perform well.</p>
-</li>
+<li>Random Forest, Logistic regressions, decision tree classifier, gradient boosting</li>
 </ul>
-<p>For each model, the features would likely include:</p>
+<p>For each model, the features would include:</p>
 <ul>
-<li>Ride duration (normalized)</li>
-<li>Time of day (possibly binned into categories like morning, afternoon, evening)</li>
-<li>Day of the week (one-hot encoded)</li>
-<li>Weekend vs. weekday (binary feature)</li>
+<li>Numerical Features: 'start_lat', 'start_lng', 'end_lat', 'end_lng', 'ride_duration_minutes','distance'</li>
+<li>Categorical Feautures: 'start_station_name', 'start_station_id', 'end_station_name', 'end_station_id','start_day_of_week','rideable_type'</li>
 </ul>
 <p>The target variable is whether the rider is a casual or a member. Before training the model, we will make sure to:</p>
 <ul>
 <li>Split the data into training and testing sets.</li>
-<li>Balance the classes if there's a significant imbalance.</li>
+<li>Balance the classes</li>
 <li>Perform any final data cleaning or transformation required.</li>
 </ul>
 </div>
@@ -8315,7 +8309,7 @@ Mode Start Hour: [17]
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="n">fraction</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="c1"># Define your features and target variable</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'member_casual_encoded'</span><span class="p">,</span> <span class="s1">'ride_id'</span><span class="p">,</span><span class="s1">'ride_duration'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Drop 'ride_id' here</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'member_casual_encoded'</span><span class="p">,</span> <span class="s1">'ride_id'</span><span class="p">,</span><span class="s1">'ride_duration'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'member_casual_encoded'</span><span class="p">]</span>
 
 <span class="c1"># Drop the original datetime columns and the target variable from your features</span>
@@ -8412,7 +8406,13 @@ weighted avg       0.66      0.66      0.66     11905
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">evaluate_model</span><span class="p">(</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span>
+
+<span class="c1"># Create a pipeline that scales the data and then runs logistic regression</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
+
+<span class="n">evaluate_model</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8425,35 +8425,21 @@ weighted avg       0.66      0.66      0.66     11905
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Model: LogisticRegression
-Accuracy: 0.6662746745065099
+<pre>Model: Pipeline
+Accuracy: 0.6641747165056698
 Confusion Matrix:
- [[3079 2479]
- [1494 4853]]
+ [[3119 2439]
+ [1559 4788]]
 Classification Report:
                precision    recall  f1-score   support
 
-           0       0.67      0.55      0.61      5558
-           1       0.66      0.76      0.71      6347
+           0       0.67      0.56      0.61      5558
+           1       0.66      0.75      0.71      6347
 
-    accuracy                           0.67     11905
-   macro avg       0.67      0.66      0.66     11905
-weighted avg       0.67      0.67      0.66     11905
+    accuracy                           0.66     11905
+   macro avg       0.66      0.66      0.66     11905
+weighted avg       0.66      0.66      0.66     11905
 
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/Users/juanmarino/miniconda3/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
 </pre>
 </div>
 </div>
@@ -8549,10 +8535,10 @@ weighted avg       0.67      0.67      0.67     11905
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 id="Improving-gradient-boosting">Improving gradient boosting<a class="anchor-link" href="#Improving-gradient-boosting">¶</a></h3><p>A quick summary of the results</p>
-<p><strong>Random Forest Classifier:</strong> This model achieved an accuracy of approximately 66.02%. The precision, recall, and f1-score for predicting casual riders (0) were 0.65, 0.54, and 0.59 respectively. For predicting members (1), these metrics were 0.67, 0.76, and 0.71 respectively.</p>
-<p><strong>Logistic Regression:</strong> This model achieved an accuracy of approximately 65.51%. The precision, recall, and f1-score for predicting casual riders were 0.65, 0.50, and 0.56 respectively. For predicting members, these metrics were 0.66, 0.79, and 0.71 respectively.</p>
-<p><strong>Decision Tree Classifier:</strong> This model achieved an accuracy of approximately 61.14%. The precision, recall, and f1-score for predicting casual riders were 0.57, 0.56, and 0.56 respectively. For predicting members, these metrics were 0.64, 0.66, and 0.65 respectively.</p>
-<p><strong>Gradient Boosting Classifier:</strong> This model achieved an accuracy of approximately 66.74%. The precision, recall, and f1-score for predicting casual riders were 0.69, 0.48, and 0.57 respectively. For predicting members, these metrics were 0.66, 0.82, and 0.73 respectively.</p>
+<p><strong>Random Forest Classifier:</strong> This model achieved an accuracy of approximately 66.2%. The precision, recall, and f1-score for predicting casual riders (0) were 0.65, 0.60, and 0.63 respectively. For predicting members (1), these metrics were 0.67, 0.71, and 0.69 respectively.</p>
+<p><strong>Logistic Regression:</strong> This model achieved an accuracy of approximately 66.4%. The precision, recall, and f1-score for predicting casual riders were 0.67, 0.56, and 0.61 respectively. For predicting members, these metrics were 0.66, 0.75, and 0.71 respectively.</p>
+<p><strong>Decision Tree Classifier:</strong> This model achieved an accuracy of approximately 61.14%. The precision, recall, and f1-score for predicting casual riders were 0.58, 0.59, and 0.58 respectively. For predicting members, these metrics were 0.64, 0.63, and 0.63 respectively.</p>
+<p><strong>Gradient Boosting Classifier:</strong> This model achieved an accuracy of approximately 67.3%. The precision, recall, and f1-score for predicting casual riders were 0.68, 0.57, and 0.62 respectively. For predicting members, these metrics were 0.67, 0.76, and 0.71 respectively.</p>
 <p>Based on these results, the Gradient Boosting Classifier model performed the best in terms of accuracy, now we proceed to imporve the model by searching for the best hyperparameters</p>
 </div>
 </div>
@@ -8721,7 +8707,6 @@ Personalize communication and offers based on the riding patterns and preference
 <p><strong>Infrastructure Improvements:</strong>
 Ensure bike availability during peak casual riding times and in locations popular among casual riders.
 Improve the convenience and experience of bike rentals for casual riders to match the expectations of members.</p>
-<p><strong>Member Conversion:</strong> The model can also be used to identify casual riders who are likely to convert to members. Target these riders with specific marketing campaigns to encourage them to become members, thereby increasing the predictability of demand.</p>
 </div>
 </div>
 </div>
